@@ -28,6 +28,17 @@ game_name = pygame.display.set_caption("2019 Learning Fair")
 
 clock = pygame.time.Clock()
 
+person = pygame.image.load('졸라맨 축소.bmp')
+person_width = person.get_width()
+person_x = 400
+move_x = 0
+person_rect = person.get_rect(center=(person_x, 520))
+
+bomb = pygame.image.load('폭탄.png')
+bomb_width = bomb.get_width()
+bomb_height = bomb.get_height()
+
+
 def writeText(text, x, y, size, font='D2', color=BLACK, rect=None):
     if font == 'D2':
         textfont = pygame.font.Font('D2CodingBold-Ver1.3.2-20180524.ttf', size)
@@ -42,15 +53,42 @@ def writeText(text, x, y, size, font='D2', color=BLACK, rect=None):
     else:
         screen.blit(text, (x, y))
 
-while True:
+done = False
+
+while not done:
     clock.tick(60)
     screen.fill(WHITE)
     done = False
 
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            done = True
             pygame.quit()
             sys.exit()
 
+        if event.type in [pygame.KEYDOWN]:
+            if event.key == pygame.K_LEFT:
+                move_x -= 10
+            elif event.key == pygame.K_RIGHT:
+                move_x += 10
+
+        if event.type in [pygame.KEYUP]:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                move_x = 0
+
+    person_x += move_x
+
+    if person_x - (person_width / 2) <= 0:
+        person_x = person_width / 2
+    elif person_x + (person_width / 2) > size[0]:
+        person_x = size[0] - (person_width / 2)
+
+    person_rect = person.get_rect(center=(person_x, 520))
+    screen.blit(person, person_rect)
+
+
     pygame.display.update()
 
+pygame.quit()
+sys.exit()
